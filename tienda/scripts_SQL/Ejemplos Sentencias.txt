@@ -1,0 +1,217 @@
+/ *
+    EJEMPLOS DE SENTENCIAS SQL
+* /
+
+/ * Creación de tablas * /
+CREAR TABLA Clientes (
+    identificacion varchar (15) CLAVE PRIMARIA,
+    nombres varchar (20),
+    apellidos varchar (20)
+);
+
+CREAR TABLA Marcas (
+	codigoMarca INTEGER,
+	nombre TEXT (10),
+	RESTRICCIÓN Marcas_PK LLAVE PRIMARIA (codigoMarca)
+);
+
+CREAR MESA Ventas (
+	codigoVenta TEXTO (5),
+	total REAL,
+	idCliente TEXT (15),
+	CONSTRAINT Ventas_PK CLAVE PRIMARIA (codigoVenta),
+	CONSTRAINT Ventas_FK FOREIGN KEY (idCliente) REFERENCIAS Clientes (identificacion)
+);
+
+/ * Crear tabla con llave foranea * /
+CREAR MESA Productos (
+	codigoBarras INTEGER,
+	nombre TEXT (10),
+	precio REAL,
+	talla TEXTO (4),
+	TEXTO en color (10),
+	idMarca INTEGER,
+	RESTRICCIÓN Productos_PK LLAVE PRIMARIA (codigoBarras),
+	RESTRICCIÓN MarcaProducto_FK FOREIGN KEY (idMarca) REFERENCIAS Marcas (codigoMarca)
+);
+
+CREAR MESA VentasProductos (
+	idVentasProductos INTEGER,
+	cantidad INTEGER,
+	idProducto INTEGER,
+	idVenta TEXTO (5),
+	RESTRICCIÓN VentasProductos_PK LLAVE PRIMARIA (idVentasProductos),
+	RESTRICCIÓN VentasProductos_FK FOREIGN KEY (idProducto) REFERENCIAS Productos (codigoBarras),
+	RESTRICCIÓN VentasProductos_FK_1 LLAVE EXTRANJERA (idVenta) REFERENCIAS Ventas (codigoVenta)
+);
+
+/ * Insertar registros * /
+INSERTAR EN VALORES DE Clientes ("1110238", "Juan Pedro", "Pérez López");
+INSERTAR EN VALORES DE Clientes ("1110655", "María", "Pérez López");
+
+/ * Mostrar todos los registros * /
+SELECCIONAR nombres DE Clientes;
+SELECCIONE nombres, apellidos DE Clientes;
+SELECCIONAR * DE Clientes;
+
+/ * Modificar Tablas * /
+ALTER TABLE Clientes ADD edad int;
+ALTER TABLE Clientes DROP COLUMN edad;
+
+/ * Eliminar tablas * /
+DROP TABLE Productos;
+MESA TRUNCATE Productos;
+
+/ * Insertar masivos * /
+insertar en Clientes (identificación, nombres, apellidos) valores ('1649129', 'Cissy', 'Ding');
+insertar en Clientes (identificación, nombres, apellidos) valores ('1441413', 'Sharona', 'Jacobsson');
+insertar en Clientes (identificación, nombres, apellidos) valores ('0824503', 'Elston', 'Rosenthal');
+insertar en Clientes (identificación, nombres, apellidos) valores ('6761578', 'Kizzie', 'Marquot');
+insertar en Clientes (identificación, nombres, apellidos) valores ('5456476', 'Deonne', 'MacCaughan');
+insertar en Clientes (identificación, nombres, apellidos) valores ('0936013', 'Bradly', 'Townrow');
+insertar en Clientes (identificación, nombres, apellidos) valores ('5506334', 'Lemmy', 'Pimmocke');
+insertar en Clientes (identificación, nombres, apellidos) valores ('6118567', 'Dennet', 'Jirus');
+insertar en Clientes (identificación, nombres, apellidos) valores ('4859976', 'Elvin', 'Keaveney');
+insertar en Clientes (identificación, nombres, apellidos) valores ('7317164', 'Suzy', 'Ritchie');
+
+/ * Seleccionar con Alias ​​* /
+SELECCIONE identificación, nombres AS "Nombre de la persona" DE Clientes;
+SELECCIONAR identificación, nombres || "" || apellidos AS "Nombre completo" DE Clientes;
+
+/ * Seleccionar sin repetidos * /
+SELECCIONE nombres DISTINTOS DE Clientes;
+
+/ * Seleccione con donde * /
+SELECCIONAR * DE Clientes DONDE identificacion = "1441413";
+SELECCIONAR * DE Clientes DONDE nombres = "Maria";
+
+SELECCIONAR codigoBarras, nombre, precio, talla, color, idMarca
+DE Productos
+DONDE nombre = "Falda";
+
+/ * Seleccione con LIKE * /
+SELECCIONE * DE Clientes DONDE nombres COMO "% Maria%";
+SELECCIONE * DE Clientes DONDE nombres COMO "% Maria josé%";
+
+/ * DONDE Y O * /
+SELECCIONE * DE Clientes DONDE nombres COMO "% Maria%" E identificacion = "1110655";
+SELECCIONE * DE Clientes DONDE nombres COMO "% Maria%" O identificacion = "1110655";
+
+/*DONDE NO*/
+SELECCIONE * DE Clientes DONDE los nombres NO SON COMO "% Maria%";
+
+/ * PEDIR POR * /
+SELECCIONAR * DE Clientes ORDENAR POR apellidos;
+SELECCIONAR * DE Clientes ORDENAR POR apellidos DESC;
+SELECCIONAR * DE Clientes ORDENAR POR apellidos ASC;
+SELECCIONAR * DE Clientes ORDENAR POR apellidos, nombres;
+
+/*SUPERIOR INFERIOR*/
+SELECCIONAR * DE Clientes DONDE LOWER (nombres) = LOWER ("Maria josé");
+
+/*CONTAR*/
+SELECCIONAR CONTEO (*) DE Clientes DONDE nombres LIKE ("% Maria%");
+SELECCIONAR CONTEO (*) COMO "NÚMERO DE MARIAS" DE Clientes DONDE nombres LIKE ("% Maria%");
+SELECCIONAR CONTEO (*) COMO "NÚMERO DE CLIENTES" DE Clientes;
+
+/ * Máximo y mínimo * /
+SELECCIONE MAX (precio) COMO "Precio", nombre, codigoBarras DE Productos;
+SELECCIONE MIN (precio) COMO "Precio", nombre, codigoBarras DE Productos;
+
+/ * Suma * /
+SELECCIONE SUMA (total) DE Ventas;
+SELECCIONE SUMA (total) DE Ventas DONDE idCliente = "49898654";
+
+/ * Suma y conteo con Donde * /
+SELECCIONE idCliente, COUNT (*) AS "Cantidad de ventas", SUM (total) AS "Dinero gastado" DESDE Ventas DONDE idCliente = "49898654";
+
+/ * UNIRSE - Unión entre dos tablas * /
+SELECCIONAR idCliente, c.nombres || '' || c.a recursos AS "Nombre cliente", COUNT (*) AS "Cantidad de ventas", SUM (total) AS "Dinero gastado"
+FROM Ventas v JOIN Clientes c ON v.idCliente = c.identificacion
+DONDE idCliente = "49898654";
+
+/*AGRUPAR POR*/
+SELECCIONAR nombre, contar (nombre) AS cantidad DE Productos GRUPO POR nombre;
+seleccione recuento (*) de Productos;
+
+/ * Agrupar por conteo * /
+SELECCIONE talla, count (talla) COMO cantidad DE Productos GROUP BY talla;
+SELECCIONE color, cuente (color) COMO cantidad DE Productos GRUPO POR color;
+
+/ * Grupo por promedio * /
+SELECCIONE nombre, AVG (precio) AS cantidad DE Productos GRUPO POR nombre;
+SELECCIONE nombre, AVG (precio) AS cantidad DE Productos GRUPO POR nombre
+
+/ ** CAMISETA DE COLOR BLANCO -> PRODUCTOS CON PRECIO MAYOR ** /
+/ * Subconsulta * /
+SELECCIONE el precio DE Productos DONDE nombre = 'Camiseta' Y color = 'Blanco';
+
+/ * Consulta y Sunconsulta * /
+SELECCIONAR nombre, precio
+DE Productos
+DONDE precio> (
+				SELECCIONAR PRECIO DE Productos
+				DONDE nombre = 'Camiseta' Y color = 'Blanco'
+);
+
+/ * Subconsulta GRoup por * /
+SELECCIONAR nombre, AVG (precio) AS "Precio promedio"
+DE Productos
+DONDE precio> (
+				SELECCIONAR PRECIO DE Productos
+				DONDE nombre = 'Camiseta' Y color = 'Blanco'
+)
+GRUPO POR nombre;
+
+/ * Subconsulta * /
+SELECCIONE AVG (precio) DE Productos;
+/ * Promedio del precio por producto por encima por encima del promedio general * /
+SELECCIONAR nombre, AVG (precio) AS "Precio promedio"
+DE Productos
+GRUPO POR nombre
+TENIENDO "Precio promedio"> (
+						SELECCIONE AVG (precio) DE Productos
+);
+
+/*ACTUALIZAR*/
+ACTUALIZAR Productos
+SET precio = 35000
+DONDE codigoBarras = 4535;
+
+/*ELIMINAR*/
+BORRAR DE Clientes
+DONDE identificacion = "101010";
+
+/*Abel
+Wolfe * /
+/ ** /
+/ * ÚNETE PARA LISTAR PRODUCTOS COMPRADOS POR EL nombre CLIENTE * /
+SELECCIONAR c.nombres || "" || c.a recursos AS "Cliente", p.nombre, p.precio
+DESDE Clientes c ÚNETE a Ventas v ON c.identificación = v.idCliente
+ÚNETE a VentasProductos vp EN v.codigoVenta = vp.idVenta
+ÚNETE Productos p ON vp.idProducto = p.codigoBarras
+DONDE c.nombres = "Abel" Y c.a lindos = "Wolfe";
+
+/ * ÚNETE PARA LISTAR PRODUCTOS COMPRADOS POR EL documento CLIENTE * /
+SELECCIONAR c.nombres || "" || c.a recursos AS "Cliente", p.nombre, p.precio
+DESDE Clientes c ÚNETE a Ventas v ON c.identificación = v.idCliente
+ÚNETE a VentasProductos vp EN v.codigoVenta = vp.idVenta
+ÚNETE Productos p ON vp.idProducto = p.codigoBarras
+DONDE c.identificación = '43197785';
+
+/ * ÚNETE PARA MOSTRAR EL PRODUCTO MÁS BARATO COMPRADO POR EL CLIENTE * /
+SELECCIONAR c.nombres || "" || c.a recursos AS "Cliente", p.nombre, MIN (p.precio) AS "Precio menor"
+DESDE Clientes c ÚNETE a Ventas v ON c.identificación = v.idCliente
+ÚNETE a VentasProductos vp EN v.codigoVenta = vp.idVenta
+ÚNETE Productos p ON vp.idProducto = p.codigoBarras
+DONDE c.nombres = "Abel" Y c.a lindos = "Wolfe";
+
+/ * LEFT JOIN * /
+SELECCIONAR c.nombres || "" || c.a recursos AS "Nombre cliente", c.identificación, v.codigoVenta
+DESDE Clientes c IZQUIERDA ÚNETE Ventas v ON v.idCliente = c.identificación;
+
+/ * IZQUIERDA UNIRSE PARA CLIENTES QUE NUNCA HAN COMPRADO * /
+SELECCIONAR c.nombres || "" || c.a recursos AS "Nombre cliente", c.identificación
+DESDE Clientes c IZQUIERDA ÚNETE A Ventas v ON v.idCliente = c.identificación
+DONDE v.codigoVenta ES NULO;
+© 2021 GitHub, Inc.

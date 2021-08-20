@@ -21,7 +21,11 @@ public class App {
         float costoDos = clienteDos.calcularCosto(8000);
 
         System.out.println("Cedula: " + clienteDos.getCedula() + "\nNombre: "+clienteDos.getNombre()+ "\nNumero de Tarjeta: " + clienteDos.getNumeroTarjeta()+ "\nCosto tiquete: "+ costoDos);
+        // Prueba de contenedores
 
+            System.out.println();
+            Prueba pruebaContenedor = new Prueba();
+            pruebaContenedor.generarLista();
 
     }
 }
